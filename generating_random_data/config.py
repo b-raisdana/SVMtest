@@ -18,12 +18,69 @@ employee_shift_change_rate = 0.05  #
 employee_weekly_role_change_rate = 0.01  #
 # employee_role_change_min_duration_days = 30#
 
-normal_starters = 0.8  #
-normal_starters_start_at_shift_start = 0.2  #
-normal_starters_start_at_shift_start_late_start_tolerance_mins = 20  #
+# normal_starters = 0.8  #
+# normal_starters_start_at_shift_start = 0.2  #
+# normal_starters_start_at_shift_start_late_start_tolerance_mins = 20  #
+self_workstation_first_login_rate = 0.95
+self_workstation_next_login_rate = 0.5
+
+login_norms = {
+    'Regular User': {
+        'roles': ['Regular Day', 'Regular Shift'],
+        'rates': {
+            'other workstations': {
+                'proportion': 0.2,
+                'max': 2,
+            },
+            'non-sensitive servers ': {
+                'proportion': 0.8,
+                'max': 2,
+            },
+            'sensitive servers': {
+                'proportion': 0,
+                'max': 2,
+            },
+        }
+    },
+    'Support': {
+        'roles': ['Support Shift', 'Support Day'],
+        'rates': {
+            'other workstations': {
+                'proportion': 0.5,
+                'max': 5,
+            },
+            'non-sensitive servers ': {
+                'proportion': 0.5,
+                'max': 4,
+            },
+            'sensitive servers': {
+                'proportion': 0.5,
+                'max': 1,
+            },
+        }
+    },
+    'Admin': {
+        'roles': ['Admin'],
+        'rates': {
+            'other workstations': {
+                'proportion': 0.1,
+                'max': 5,
+            },
+            'non-sensitive servers ': {
+                'proportion': 0.8,
+                'max': 4,
+            },
+            'sensitive servers': {
+                'proportion': 0.5,
+                'max': 2,
+            },
+        }
+    },
+}
+
 normal_early_start_mins = 30
-normal_late_start_mins = 45
-absence_rate = 0.1
+normal_late_start_mins = 150
+absence_rate = (1 - 0.9)
 
 general_shifts = {
     'morning': {
@@ -75,65 +132,38 @@ role_shift_varieties = {
 }  #
 min_inter_login_mins = 10
 
-login_rates = {
-    'Admin': {
-        'other_workstation': 5,
-        'normal_server': 4,
-        'sensitive_server': 1,
-        'min_inter_login_mins': min_inter_login_mins,
-    },
-    'Support Day': {
-        'other_workstation': 5,
-        'normal_server': 4,
-        'sensitive_server': 0,
-        'min_inter_login_mins': min_inter_login_mins,
-    },
-    'Support Shift': {
-        'other_workstation': 5,
-        'normal_server': 4,
-        'sensitive_server': 0,
-        'min_inter_login_mins': min_inter_login_mins,
-    },
-    'Regular Shift': {
-        'other_workstation': 2,
-        'normal_server': 2,
-        'sensitive_server': 0,
-        'min_inter_login_mins': 30,
-    },
-    'Regular Day': {
-        'other_workstation': 2,
-        'normal_server': 2,
-        'sensitive_server': 0,
-        'min_inter_login_mins': 30,
-    }
-}
-login_normals = {
-    'Admin': {
-        'other_workstation': 0.10,
-        'normal_server': 0.8,
-        'sensitive_server': 0.5,
-    },
-    'Support Day': {
-        'other_workstation': 0.5,
-        'normal_server': 0.5,
-        'sensitive_server': 0.5,
-    },
-    'Support Shift': {
-        'other_workstation': 0.5,
-        'normal_server': 0.5,
-        'sensitive_server': 0.5,
-    },
-    'Regular Shift': {
-        'other_workstation': 0.20,
-        'normal_server': 0.8,
-        'sensitive_server': 1,
-    },
-    'Regular Day': {
-        'other_workstation': 0.10,
-        'normal_server': 0.8,
-        'sensitive_server': 0.5,
-    }
-}
+# login_rates = {
+#     'Admin': {
+#         'other_workstation': 5,
+#         'normal_server': 4,
+#         'sensitive_server': 1,
+#         'min_inter_login_mins': min_inter_login_mins,
+#     },
+#     'Support Day': {
+#         'other_workstation': 5,
+#         'normal_server': 4,
+#         'sensitive_server': 0,
+#         'min_inter_login_mins': min_inter_login_mins,
+#     },
+#     'Support Shift': {
+#         'other_workstation': 5,
+#         'normal_server': 4,
+#         'sensitive_server': 0,
+#         'min_inter_login_mins': min_inter_login_mins,
+#     },
+#     'Regular Shift': {
+#         'other_workstation': 2,
+#         'normal_server': 2,
+#         'sensitive_server': 0,
+#         'min_inter_login_mins': 30,
+#     },
+#     'Regular Day': {
+#         'other_workstation': 2,
+#         'normal_server': 2,
+#         'sensitive_server': 0,
+#         'min_inter_login_mins': 30,
+#     }
+# }
 devices_distribution = {
     'workstation': 0.93,
     'normal_server': 0.055,

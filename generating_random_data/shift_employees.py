@@ -25,7 +25,7 @@ def generate_daily_timesheet(_work_group_df):
                 {'Day': pd.date_range(config.start_day,
                                       config.start_day + datetime.timedelta(days=config.duration_days),
                                       freq='1d')}),
-            how='cross')).drop(columns=['Unnamed: 0'])
+            how='cross'))
     return _daily_timesheet
 
 
@@ -176,17 +176,18 @@ def shift_parameters(_daily_timesheet):
         _daily_timesheet.loc[role_timesheet_mask, 'Shift'] = (
             daily_timesheet_back.loc[role_timesheet_mask, 'ShiftID'].map(
                 {index: value for index, value in enumerate(role_shift_variety_names)}))
-        _daily_timesheet.loc[role_timesheet_mask, 'Start'] = (
+        _daily_timesheet.loc[role_timesheet_mask, 'Shift Start'] = (
             daily_timesheet_back.loc[role_timesheet_mask, 'ShiftID'].map(
                 {index: value for index, value in enumerate(role_shift_variety_starts)}))
-        _daily_timesheet.loc[role_timesheet_mask, 'End'] = (
+        _daily_timesheet.loc[role_timesheet_mask, 'Shift End'] = (
             daily_timesheet_back.loc[role_timesheet_mask, 'ShiftID'].map(
                 {index: value for index, value in enumerate(role_shift_variety_ends)}))
     return _daily_timesheet
 
 
 daily_timesheet = shift_parameters(daily_timesheet)
-daily_timesheet.to_csv("shift_employees.csv")
+
+daily_timesheet.to_csv("shift_employees.csv", index=False)
 # def distribute_role_over_shifts(role, work_group_df):
 #     regular_shift_idx = work_group_df[work_group_df['Role'] == role].index.values.tolist()
 #     shifts_headcount = np.random.multinomial(

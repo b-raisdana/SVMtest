@@ -95,7 +95,7 @@ def verify_work_group(_work_group_df):
 
 verify_work_group(work_group_df)
 
-work_group_df.to_csv("work_group_df.csv")
+work_group_df.to_csv("work_group_df.csv", index=False)
 
 # # Ensure the total count is still valid
 # def check_role_users_distribution(_work_group_df, _role_distribution):
