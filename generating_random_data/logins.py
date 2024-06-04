@@ -10,6 +10,7 @@ daily_timesheet = pd.read_csv("shift_employees.csv", parse_dates=['Day'])
 
 
 def first_login(_daily_timesheet):
+    # todo: test iloc[[0,0]]
     number_of_self_workstation_first_logins = round(
         config.self_workstation_first_login_rate * len(_daily_timesheet))
     self_workstation_first_login_ids = np.random.choice(_daily_timesheet.index, number_of_self_workstation_first_logins,
@@ -28,10 +29,12 @@ def first_login(_daily_timesheet):
     return _logins
 
 
+# todo: test iloc[[0,0]]
 logins = first_login(daily_timesheet)
 
 
 def drop_near_re_logins(_logins):
+    # todo: test
     sorted_daily_timesheet = _logins.sort_values(by=['Day', 'UserID', 'Login Time'], ascending=True).copy()
     sorted_daily_timesheet['Previous Login UserID'] = sorted_daily_timesheet['UserID'].shift(-1)
     sorted_daily_timesheet['Previous Login Time'] = sorted_daily_timesheet['Login Time'].shift(-1)
@@ -44,9 +47,10 @@ def drop_near_re_logins(_logins):
 
 
 def more_login_to_self_workstations(_daily_timesheet: pd.DataFrame, _logins: pd.DataFrame):
-    self_re_login_ilocs = np.random.choice(range(len(_logins)), round(len(_daily_timesheet) * config.self_workstation_next_login_rate),
-                                    replace=True)
-    re_logins: pd.DataFrame = _logins.iloc[self_re_login_ilocs].copy()
+    self_re_login_ilocs = np.random.choice(range(len(_logins)),
+                                           round(len(_daily_timesheet) * config.self_workstation_next_login_rate),
+                                           replace=True)
+    re_logins: pd.DataFrame = _logins.iloc[self_re_login_ilocs].copy()  # todo: test
     re_logins['Login Time'] = pd.Timestamp.fromtimestamp(
         np.random.randint(re_logins['Shift Start'].to_datetime().total_seconds(),
                           re_logins['Shift End'].to_datetime().total_seconds()))
@@ -68,7 +72,7 @@ more_login_to_self_workstations(daily_timesheet, logins)
 
 
 def logins_to_other_device(_daily_timesheet: pd.DataFrame, _logins: pd.DataFrame):
-    for user_type, user_parameters in config.login_norms.items():
+    for user_type, user_parameters in config.login_norms.items():  # todo: test
         roles: list = user_parameters['roles']
         rates: dict = user_parameters['rates']
 
@@ -84,7 +88,7 @@ def logins_to_other_device(_daily_timesheet: pd.DataFrame, _logins: pd.DataFrame
                 [idx for idx, count in zip(idxs_for_logins_to_device_type, user_type_timeshift_idx_repeat)
                  for _ in range(count)]
             new_logins = _daily_timesheet.loc[duplicated_ids_for_logins].copy()
-            new_logins['Target Type'] = device_type
+            new_logins['Target Type'] = device_type  # todo: test
             new_logins['Login Time'] = pd.Timestamp.fromtimestamp(
                 np.random.randint(new_logins['Shift Start'].to_datetime().total_seconds(),
                                   new_logins['Shift End'].to_datetime().total_seconds()))
@@ -93,4 +97,4 @@ def logins_to_other_device(_daily_timesheet: pd.DataFrame, _logins: pd.DataFrame
     drop_near_re_logins(_logins)
 
 
-logins_to_other_device(daily_timesheet, logins)
+logins_to_other_device(daily_timesheet, logins)  # todo: test
