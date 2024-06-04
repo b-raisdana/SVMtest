@@ -1,4 +1,6 @@
-import numpy as np
+import pandas as pd
+
+from generating_random_data import config
 
 
 def generate_devices(total_number_of_devices, devices_distribution):
@@ -10,11 +12,13 @@ def generate_devices(total_number_of_devices, devices_distribution):
     }
     :return:
     '''
-    devices = []
-    sum_of_propotions = sunm(devices_distribution.values)
-    for device_type, propotion_of_device in devices_distribution:
-        devices += [device_type] * int(propotion_of_device / sum_of_propotions)
-    return devices
+    _devices = []
+    sum_of_proportions = sum(devices_distribution.values())
+    for device_type, proportion_of_device in devices_distribution.items():
+        _devices += [device_type] * int(total_number_of_devices * proportion_of_device / sum_of_proportions)
+    return _devices
 
 
 devices = generate_devices(config.total_number_of_devices, config.devices_distribution)
+devices_df = pd.DataFrame(devices, columns=['Device Type'])
+devices_df.to_csv('devices.csv')

@@ -25,7 +25,7 @@ def generate_daily_timesheet(_work_group_df):
                 {'Day': pd.date_range(config.start_day,
                                       config.start_day + datetime.timedelta(days=config.duration_days),
                                       freq='1d')}),
-            how='cross'))
+            how='cross')).drop(columns=['Unnamed: 0'])
     return _daily_timesheet
 
 
