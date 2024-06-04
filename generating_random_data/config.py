@@ -1,6 +1,8 @@
 from datetime import datetime
-import numpy as np
 from random import seed
+
+import numpy as np
+
 seed(42)
 np.random.seed(42)
 
@@ -9,16 +11,16 @@ duration_weeks = 6
 days_per_week = 7
 duration_days = duration_weeks * days_per_week
 
-employee_shift_change_rate = 0.05#
+employee_shift_change_rate = 0.05  #
 # employee_shift_change_min_duration_days = 5#
 # employee_shift_change_max_duration_days = 8#
 
-employee_weekly_role_change_rate = 0.01 #
+employee_weekly_role_change_rate = 0.01  #
 # employee_role_change_min_duration_days = 30#
 
-normal_starters = 0.8#
-normal_starters_start_at_shift_start = 0.2#
-normal_starters_start_at_shift_start_late_start_tolerance_mins = 20#
+normal_starters = 0.8  #
+normal_starters_start_at_shift_start = 0.2  #
+normal_starters_start_at_shift_start_late_start_tolerance_mins = 20  #
 normal_early_start_mins = 30
 normal_late_start_mins = 45
 absence_rate = 0.1
@@ -40,7 +42,7 @@ general_shifts = {
         'start': 8,
         'end': 17,
     },
-}#
+}  #
 role_shift_varieties = {
     '''
     role_shift_varieties = {
@@ -72,7 +74,7 @@ role_shift_varieties = {
     'Regular Day': {
         'day': (general_shifts['standard'], 1),
     }
-} #
+}  #
 min_inter_login_mins = 10
 
 login_rates = {
@@ -143,7 +145,8 @@ total_number_of_devices = 200
 
 num_groups = 10
 total_employees = 150
-roles = ['Admin', 'Support Day', 'Support Shift', 'Regular Shift', 'Regular Day']
+roles = ['Regular Day', 'Regular Shift', 'Support Shift', 'Support Day', 'Admin', ]
+all_shifts = ['morning', 'afternoon', 'night']
 min_groups_for_roles = {
     'Admin': 1,
     'Support Day': 1,
