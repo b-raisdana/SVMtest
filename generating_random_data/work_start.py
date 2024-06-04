@@ -21,23 +21,23 @@ daily_timesheet = pd.read_csv("shift_employees.csv", parse_dates=['Day'])
 # normal_starters = choose_normal_starters(daily_timesheet)
 
 
-def actual_start(_daily_timesheet, _normal_starters):
-    # choose 'normal_starters_start_at_shift_start' days.
-
-    number_of_normal_starters_at_shift_start = round(
-        config.normal_starters_start_at_shift_start * len(_normal_starters))
-    normal_starters_at_shift_start = np.random.choice(_normal_starters, number_of_normal_starters_at_shift_start,
-                                                      replace=False)
-    normal_starters_at_shift_start_mask = _daily_timesheet['UserID'].isin(normal_starters_at_shift_start)
-    scheduled_starts = _daily_timesheet.loc[normal_starters_at_shift_start_mask, 'Shift Start']
-    tolerance_start_mins = gaussian(start=config.normal_early_start_mins, end=config.normal_late_start_mins,
-                                    size=number_of_normal_starters_at_shift_start, skew=10)
-    actual_starts = scheduled_starts + tolerance_start_mins * datetime.timedelta(minutes=1)
-    _daily_timesheet.loc[normal_starters_at_shift_start_mask, 'Login Time'] = actual_starts
-    return _daily_timesheet
-
-
-actual_start(daily_timesheet, daily_timesheet['UserID'].unique())
+# def first_login_to_self_workstation(_daily_timesheet, _normal_starters):
+#     # choose 'normal_starters_start_at_shift_start' days.
+#
+#     number_of_normal_starters_at_shift_start = round(
+#         config.normal_starters_start_at_shift_start * len(_normal_starters))
+#     normal_starters_at_shift_start = np.random.choice(_normal_starters, number_of_normal_starters_at_shift_start,
+#                                                       replace=False)
+#     normal_starters_at_shift_start_mask = _daily_timesheet['UserID'].isin(normal_starters_at_shift_start)
+#     scheduled_starts = _daily_timesheet.loc[normal_starters_at_shift_start_mask, 'Shift Start']
+#     tolerance_start_mins = gaussian(start=config.normal_early_start_mins, end=config.normal_late_start_mins,
+#                                     size=number_of_normal_starters_at_shift_start, skew=10)
+#     actual_starts = scheduled_starts + tolerance_start_mins * datetime.timedelta(minutes=1)
+#     _daily_timesheet.loc[normal_starters_at_shift_start_mask, 'Actual Start'] = actual_starts
+#     return _daily_timesheet
+#
+#
+# actual_start(daily_timesheet, daily_timesheet['UserID'].unique())
 
 
 # '''

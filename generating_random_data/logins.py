@@ -4,18 +4,27 @@ import numpy as np
 import pandas as pd
 
 from generating_random_data import config
+from generating_random_data.distribution import gaussian
 
 daily_timesheet = pd.read_csv("shift_employees.csv", parse_dates=['Day'])
 
 
 def first_login(_daily_timesheet):
-    _logins = _daily_timesheet.copy()
-    _logins['Type'] = 'Self Work Station'
-    _logins['Login Target'] = _logins[['UserID', 'GroupID', 'Type']].to_records(index=False)
-    not_first_logins_idxs = np.random.choice(_daily_timesheet.index,
-                                             len(_daily_timesheet) * (1 - config.self_workstation_first_login_rate),
-                                             replace=False)
-    _logins.drop(not_first_logins_idxs, axis='indexes')
+    number_of_self_workstation_first_logins = round(
+        config.self_workstation_first_login_rate * len(_daily_timesheet))
+    self_workstation_first_login_ids = np.random.choice(_daily_timesheet.index, number_of_self_workstation_first_logins,
+                                                        replace=False)
+    scheduled_start_day = _daily_timesheet.loc[self_workstation_first_login_ids, 'Day']
+    scheduled_start_hours = _daily_timesheet.loc[self_workstation_first_login_ids, 'Shift Start']
+    tolerance_start_mins = gaussian(start=-config.normal_early_start_mins, end=config.normal_late_start_mins,
+                                    size=number_of_self_workstation_first_logins, skew=4)
+    login_time = (scheduled_start_day + scheduled_start_hours * datetime.timedelta(hours=1)
+                  + tolerance_start_mins * datetime.timedelta(minutes=1))
+
+    _logins = _daily_timesheet.loc[self_workstation_first_login_ids].copy()
+    _logins['Target Type'] = 'Self Work Station'
+    _logins['Login Target'] = _logins[['UserID', 'GroupID', 'Target Type']].to_records(index=False)
+    _logins['Login Time'] = login_time
     return _logins
 
 
@@ -35,9 +44,9 @@ def drop_near_re_logins(_logins):
 
 
 def more_login_to_self_workstations(_daily_timesheet: pd.DataFrame, _logins: pd.DataFrame):
-    re_logi_idxs = np.random.choice(_logins.index, len(_daily_timesheet) * config.self_workstation_next_login_rate,
+    self_re_login_ilocs = np.random.choice(range(len(_logins)), round(len(_daily_timesheet) * config.self_workstation_next_login_rate),
                                     replace=True)
-    re_logins: pd.DataFrame = _logins.iloc[re_logi_idxs].copy()
+    re_logins: pd.DataFrame = _logins.iloc[self_re_login_ilocs].copy()
     re_logins['Login Time'] = pd.Timestamp.fromtimestamp(
         np.random.randint(re_logins['Shift Start'].to_datetime().total_seconds(),
                           re_logins['Shift End'].to_datetime().total_seconds()))
@@ -75,6 +84,7 @@ def logins_to_other_device(_daily_timesheet: pd.DataFrame, _logins: pd.DataFrame
                 [idx for idx, count in zip(idxs_for_logins_to_device_type, user_type_timeshift_idx_repeat)
                  for _ in range(count)]
             new_logins = _daily_timesheet.loc[duplicated_ids_for_logins].copy()
+            new_logins['Target Type'] = device_type
             new_logins['Login Time'] = pd.Timestamp.fromtimestamp(
                 np.random.randint(new_logins['Shift Start'].to_datetime().total_seconds(),
                                   new_logins['Shift End'].to_datetime().total_seconds()))

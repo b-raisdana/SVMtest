@@ -78,8 +78,8 @@ login_norms = {
     },
 }
 
-normal_early_start_mins = 30
-normal_late_start_mins = 150
+normal_early_start_mins = 50
+normal_late_start_mins = 50
 absence_rate = (1 - 0.9)
 
 general_shifts = {

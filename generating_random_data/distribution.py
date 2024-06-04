@@ -2,6 +2,8 @@ import numpy as np
 import plotly.graph_objs as go
 import scipy
 
+from generating_random_data import config
+
 
 # distribution = scipy.stats.gengamma(300, 0.1, loc=50, scale=1)
 # pre_samples = distribution.rvs(size=10000)  # Generate 1000 random samples
@@ -115,7 +117,7 @@ def normal(start, end, size, fit=False):
 
 def gaussian(start, end, size, skew=0.0):
     mean = np.average([start, end])
-    std = (end - start) / 4
+    std = (end - start) / 2
     sigma = skew / np.sqrt(1.0 + skew ** 2)
     u0 = np.random.randn(size)
     v = np.random.randn(size)
@@ -125,21 +127,23 @@ def gaussian(start, end, size, skew=0.0):
     return u1
 
 
-# samples = normal(_start, _end, 10000)
-samples = gaussian(start=_start, end=_end, size=10000, skew=10)
-# pre_samples = distribution.rvs(size=10000)  # Generate 1000 random samples
-# min = pre_samples.min() - random()*2
-# max = pre_samples.max() + random()*2
-# # Apply CDF transfo
-# # rmation to map samples to the range [0, 24]
-# cdf_values = distribution.cdf(pre_samples)  # Map to [0, 1]
-# samples = cdf_values * 24  # Scale to [0, 24]
-# samples = (pre_samples - min) / (max - min) * 24
-# Create a histogram of the samples
-histogram = go.Histogram(x=samples, nbinsx=200, name='Samples', opacity=0.75)
-fig = go.Figure(data=[histogram])
-fig.update_layout(
-    title='Generalized Gamma Distribution', xaxis_title='Value', yaxis_title='Frequency', barmode='overlay'
-)
-# Show the plot
-fig.show()
+# # samples = normal(_start, _end, 10000)
+# # samples = gaussian(start=_start, end=_end, size=700, skew=-10)
+# samples = gaussian(start=-config.normal_early_start_mins, end=config.normal_late_start_mins,
+#                                     size=6200, skew=4)
+# # pre_samples = distribution.rvs(size=10000)  # Generate 1000 random samples
+# # min = pre_samples.min() - random()*2
+# # max = pre_samples.max() + random()*2
+# # # Apply CDF transfo
+# # # rmation to map samples to the range [0, 24]
+# # cdf_values = distribution.cdf(pre_samples)  # Map to [0, 1]
+# # samples = cdf_values * 24  # Scale to [0, 24]
+# # samples = (pre_samples - min) / (max - min) * 24
+# # Create a histogram of the samples
+# histogram = go.Histogram(x=samples, nbinsx=200, name='Samples', opacity=0.75)
+# fig = go.Figure(data=[histogram])
+# fig.update_layout(
+#     title='Generalized Gamma Distribution', xaxis_title='Value', yaxis_title='Frequency', barmode='overlay'
+# )
+# # Show the plot
+# fig.show()
