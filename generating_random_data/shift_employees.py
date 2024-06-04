@@ -5,7 +5,9 @@ import numpy as np
 import pandas as pd
 
 import config
-from work_groups import work_group_df, is_sized_work_group
+from work_groups import is_sized_work_group
+
+work_group_df = pd.read_csv("work_group_df.csv")
 
 
 def diff(df1, df2):
@@ -53,7 +55,7 @@ def role_change(_daily_timesheet, _work_group):
     for i, user_id in enumerate(role_change_candidates):
         old_user_role = _work_group.loc[_work_group['UserID'] == user_id, 'Role'].values[0]
         new_user_role = config.roles[(config.roles.index(old_user_role) + 1) % len(config.roles)]
-        groups_of_new_role = work_group_df[work_group_df['Role']==new_user_role]['GroupID'].unique().tolist()
+        groups_of_new_role = work_group_df[work_group_df['Role'] == new_user_role]['GroupID'].unique().tolist()
         new_user_group = np.random.choice(groups_of_new_role)
         _daily_timesheet.loc[
             (_daily_timesheet['UserID'] == user_id) &
@@ -149,13 +151,14 @@ def shift_change(_daily_timesheet):
         #     config.all_shifts[(config.all_shifts.index(shift) + shifter_offset) % len(config.all_shifts)]
         #     for shift, shifter_offset in zip(shifts_of_days, shifts_of_day_shift_offset)]
         _daily_timesheet.loc[shift_change_idxs]['ShiftID'] = (_daily_timesheet.iloc[shift_change_idxs][
-                                                                   'ShiftID'] + shifts_of_day_shift_offset) % 3
+                                                                  'ShiftID'] + shifts_of_day_shift_offset) % 3
     # changes = diff(_daily_timesheet_back,_daily_timesheet)
 
 
 daily_timesheet_back = daily_timesheet.copy()
 shift_change(daily_timesheet)
 changes = diff(daily_timesheet_back, daily_timesheet_back)
+
 
 # daily_timesheet_back['Shift'] = daily_timesheet_back['ShiftID'].map(
 #     {index: value for index, value in enumerate(config.all_shifts)})
@@ -183,7 +186,7 @@ def shift_parameters(_daily_timesheet):
 
 
 daily_timesheet = shift_parameters(daily_timesheet)
-nop = 1
+daily_timesheet.to_csv("shift_employees.csv")
 # def distribute_role_over_shifts(role, work_group_df):
 #     regular_shift_idx = work_group_df[work_group_df['Role'] == role].index.values.tolist()
 #     shifts_headcount = np.random.multinomial(
