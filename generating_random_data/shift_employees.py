@@ -51,14 +51,16 @@ def role_change(_daily_timesheet, _work_group):
                          replace=False))
     role_change_dates = np.random.choice(_daily_timesheet['Day'].unique(), len(role_change_candidates), replace=True)
     for i, user_id in enumerate(role_change_candidates):
-        user_role = _work_group.loc[_work_group['UserID'] == user_id, 'Role'].values[0]
+        old_user_role = _work_group.loc[_work_group['UserID'] == user_id, 'Role'].values[0]
+        new_user_role = config.roles[(config.roles.index(old_user_role) + 1) % len(config.roles)]
+        groups_of_new_role = work_group_df[work_group_df['Role']==new_user_role]['GroupID'].unique().tolist()
+        new_user_group = np.random.choice(groups_of_new_role)
         _daily_timesheet.loc[
             (_daily_timesheet['UserID'] == user_id) &
             (_daily_timesheet['Day'] > role_change_dates[i])
-            , 'Role'
-        ] = config.roles[(config.roles.index(user_role) + 1) % len(config.roles)]
+            , ['Role', 'GroupID']
+        ] = (new_user_role, new_user_group)
     changes = diff(_daily_timesheet_back, _daily_timesheet)
-    nop = 1
 
 
 daily_timesheet_back = daily_timesheet.copy()
@@ -100,19 +102,20 @@ def daily_role_shifts(_daily_timesheet: pd.DataFrame):
         role_shift_varieties = config.role_shift_varieties[role]
         role_shift_variety_names = role_shift_varieties.keys()
         role_shift_variety_proportion = [proportion for shift_time_dict, proportion in role_shift_varieties.values()]
+
         for day in _daily_timesheet['Day'].unique():
             all_shifts_of_the_day_index = _daily_timesheet[role_timesheet_mask & (_daily_timesheet['Day'] == day)].index
             if len(role_shift_variety_names) > 1:
                 _daily_timesheet.loc[all_shifts_of_the_day_index, 'ShiftID'] = \
-                    np.random.choise(range(len(role_shift_variety_names)), len(all_shifts_of_the_day_index),
+                    np.random.choice(range(len(role_shift_variety_names)), len(all_shifts_of_the_day_index),
                                      p=role_shift_variety_proportion).tolist()
             else:
                 _daily_timesheet.loc[all_shifts_of_the_day_index, 'ShiftID'] = 0
+    return _daily_timesheet
 
 
 daily_timesheet = daily_role_shifts(daily_timesheet)
-assert not daily_timesheet[daily_timesheet['Role'].isin(['Support Shift', 'Regular Shift'])]['ShiftID'].isna().any()
-assert not daily_timesheet[daily_timesheet['Role'].isin(['Support Shift', 'Regular Shift'])]['ShiftID'].isna().any()
+assert not daily_timesheet['ShiftID'].isna().any()
 verify_daily_timesheet(daily_timesheet)
 
 
@@ -145,7 +148,7 @@ def shift_change(_daily_timesheet):
         # new_shifts_of_day = [
         #     config.all_shifts[(config.all_shifts.index(shift) + shifter_offset) % len(config.all_shifts)]
         #     for shift, shifter_offset in zip(shifts_of_days, shifts_of_day_shift_offset)]
-        _daily_timesheet.iloc[shift_change_idxs]['ShiftID'] = (_daily_timesheet.iloc[shift_change_idxs][
+        _daily_timesheet.loc[shift_change_idxs]['ShiftID'] = (_daily_timesheet.iloc[shift_change_idxs][
                                                                    'ShiftID'] + shifts_of_day_shift_offset) % 3
     # changes = diff(_daily_timesheet_back,_daily_timesheet)
 
@@ -153,8 +156,34 @@ def shift_change(_daily_timesheet):
 daily_timesheet_back = daily_timesheet.copy()
 shift_change(daily_timesheet)
 changes = diff(daily_timesheet_back, daily_timesheet_back)
-daily_timesheet_back['Shift'] = daily_timesheet_back['ShiftID'].map(
-    {index: value for index, value in enumerate(config.all_shifts)})
+
+# daily_timesheet_back['Shift'] = daily_timesheet_back['ShiftID'].map(
+#     {index: value for index, value in enumerate(config.all_shifts)})
+
+
+def shift_parameters(_daily_timesheet):
+    for role in config.roles:
+        role_timesheet_mask = _daily_timesheet['Role'] == role
+        role_shift_varieties = config.role_shift_varieties[role]
+        role_shift_variety_names = role_shift_varieties.keys()
+        role_shift_variety_starts = [shift_time_dict['start'] for shift_time_dict, proportion in
+                                     role_shift_varieties.values()]
+        role_shift_variety_ends = [shift_time_dict['end'] for shift_time_dict, proportion in
+                                   role_shift_varieties.values()]
+        _daily_timesheet.loc[role_timesheet_mask, 'Shift'] = (
+            daily_timesheet_back.loc[role_timesheet_mask, 'ShiftID'].map(
+                {index: value for index, value in enumerate(role_shift_variety_names)}))
+        _daily_timesheet.loc[role_timesheet_mask, 'Start'] = (
+            daily_timesheet_back.loc[role_timesheet_mask, 'ShiftID'].map(
+                {index: value for index, value in enumerate(role_shift_variety_starts)}))
+        _daily_timesheet.loc[role_timesheet_mask, 'End'] = (
+            daily_timesheet_back.loc[role_timesheet_mask, 'ShiftID'].map(
+                {index: value for index, value in enumerate(role_shift_variety_ends)}))
+    return _daily_timesheet
+
+
+daily_timesheet = shift_parameters(daily_timesheet)
+nop = 1
 # def distribute_role_over_shifts(role, work_group_df):
 #     regular_shift_idx = work_group_df[work_group_df['Role'] == role].index.values.tolist()
 #     shifts_headcount = np.random.multinomial(

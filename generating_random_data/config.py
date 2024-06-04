@@ -44,13 +44,11 @@ general_shifts = {
     },
 }  #
 role_shift_varieties = {
-    '''
-    role_shift_varieties = {
-        role:{
-            shift: ({start, end}, population)
-        },
-    }
-    '''
+    # role_shift_varieties = {
+    #     role:{
+    #         shift: ({start, end}, population)
+    #     },
+    # }
     'Admin': {
         'day': (general_shifts['standard'], 0.9),
         'night': ({
@@ -59,12 +57,12 @@ role_shift_varieties = {
                   }, 0.1),
     },
     'Support Day': {
-        'day': (general_shifts['standard'], 0.55),
+        'day': (general_shifts['standard'], 1),
     },
     'Support Shift': {
-        'morning': (general_shifts['morning'], 0.15),
-        'afternoon': (general_shifts['afternoon'], 0.15),
-        'night': (general_shifts['night'], 0.15),
+        'morning': (general_shifts['morning'], 0.33333),
+        'afternoon': (general_shifts['afternoon'], 0.33333),
+        'night': (general_shifts['night'], 0.33334),
     },
     'Regular Shift': {
         'morning': (general_shifts['morning'], 0.33333),
