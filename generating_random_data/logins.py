@@ -125,17 +125,19 @@ def general_role(role):
 
 def self_workstation(sub_logins: pd.DataFrame, _devices):
     # target is UserID.GroupID
-    merged = sub_logins.merge(_devices, left_on=['UserID', 'GroupID'], right_on=['UserID', 'GroupID'], how='left')
+    merged = sub_logins.merge(_devices, left_on=['UserID', 'GroupID'], right_on=['Device UserID', 'Device GroupID'],
+                              how='left')
+    merged.index = sub_logins.index
     assert all(merged['DeviceID'].notna())
-    t = merged['DeviceID'].tolist()
+    t = merged[['Device UserID', 'Device GroupID', 'Device Role', 'Device Type', 'DeviceID']]
     return t
 
 
 def allowed_workstations(role: str, _devices):
     general_rol = general_role(role)
     allowed_target_roles = config.login_norms[general_rol]['target workgroups']
-    t = _devices[_devices['Role'].isin(allowed_target_roles)]
-    return t['DeviceID']
+    t = _devices[_devices['Device Role'].isin(allowed_target_roles)]
+    return t.index
 
 
 def random_allowed_workstations(sub_logins, _devices):
@@ -143,41 +145,50 @@ def random_allowed_workstations(sub_logins, _devices):
         role_mask = sub_logins['Role'] == role
         _workstations = allowed_workstations(role, _devices)
         targets = np.random.choice(_workstations, len(sub_logins.loc[role_mask]), replace=True)
-        sub_logins.loc[role_mask, 'Target'] = targets
-    return sub_logins
+        # 'Device UserID','Device GroupID','Device Role','Device Type','DeviceID'
+        t_devices = _devices.loc[targets, ['Device UserID', 'Device GroupID', 'Device Role', 'Device Type', 'DeviceID']]
+        t_devices.index = sub_logins.loc[role_mask].index
+        sub_logins.loc[role_mask, ['Device UserID', 'Device GroupID', 'Device Role', 'Device Type', 'DeviceID']] = \
+            t_devices
+    return sub_logins[['Device UserID', 'Device GroupID', 'Device Role', 'Device Type', 'DeviceID']]
 
 
 def random_servers(size, _devices, server_type: Literal['normal server', 'sensitive server']):
     server_ids = _devices.loc[_devices['Device Type'] == server_type, 'DeviceID']
     t = np.random.choice(server_ids, size)
-    return t
+    return _devices.loc[t].reset_index()
 
 
 def login_targets(_logins, _devices):
-    _logins['Target'] = pd.NA
-    # _l = _logins['UserID', 'GroupID', 'Role', 'Target Type']
-    # roles = _l['Role'].unique()
-    # general_roles = [general_role(r) for r in roles]
+    _logins['Device UserID', 'Device GroupID', 'Device Role', 'Device Type', 'DeviceID'] = pd.NA
     targets_types = _logins['Target Type'].unique()
     for target_type in targets_types:
         target_type_mask = _logins['Target Type'] == target_type
         if target_type == 'Self Work Station':
-            _logins.loc[target_type_mask, 'Target'] = self_workstation(_logins.loc[target_type_mask],
-                                                                       _devices)
+            _logins.loc[
+                target_type_mask, ['Device UserID', 'Device GroupID', 'Device Role', 'Device Type', 'DeviceID']] = \
+                self_workstation(_logins.loc[target_type_mask], _devices)
 
         elif target_type == 'other workstations':
             # login target is from allowed_workstations according to privilege or user role.
-            _logins.loc[target_type_mask] = random_allowed_workstations(_logins.loc[target_type_mask],
-                                                                        _devices)
+            _logins.loc[
+                target_type_mask, ['Device UserID', 'Device GroupID', 'Device Role', 'Device Type', 'DeviceID']] = (
+                random_allowed_workstations(_logins.loc[target_type_mask], _devices))
         elif target_type == 'normal server':
             # target is one normal server
-            _logins.loc[target_type_mask, 'Target'] = random_servers(len(_logins.loc[target_type_mask]),
-                                                                     _devices, server_type='normal server')
+            r_servers = random_servers(len(_logins.loc[target_type_mask]), _devices, server_type='normal server')
+            r_servers.index = _logins.loc[target_type_mask].index
+            _logins.loc[
+                target_type_mask, ['Device UserID', 'Device GroupID', 'Device Role', 'Device Type', 'DeviceID']] = \
+                r_servers
 
         elif target_type == 'sensitive server':
             # target is one sensitive server
-            _logins.loc[target_type_mask, 'Target'] = random_servers(len(_logins.loc[target_type_mask]),
-                                                                     _devices, server_type='sensitive server')
+            r_servers = random_servers(len(_logins.loc[target_type_mask]), _devices, server_type='sensitive server')
+            r_servers.index = _logins.loc[target_type_mask].index
+            _logins.loc[
+                target_type_mask, ['Device UserID', 'Device GroupID', 'Device Role', 'Device Type', 'DeviceID']] = \
+                r_servers
         else:
             raise ValueError(target_type)
 

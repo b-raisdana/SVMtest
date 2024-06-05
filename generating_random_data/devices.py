@@ -42,6 +42,10 @@ def generate_workstations(_daily_timesheet):
 
 
 devices_df = generate_workstations(daily_timesheet)
-
+devices_df.rename(columns={
+    'UserID': 'Device UserID',
+    'GroupID': 'Device GroupID',
+    'Role': 'Device Role',
+}, inplace=True)
 # devices_df = pd.DataFrame(devices, columns=['Device Type'])
 devices_df.to_csv('devices.csv', index=False)

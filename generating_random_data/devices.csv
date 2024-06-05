@@ -1,4 +1,4 @@
-UserID,GroupID,Role,Device Type,DeviceID
+Device UserID,Device GroupID,Device Role,Device Type,DeviceID
 0.0,1,Admin,workstation,0
 1.0,1,Admin,workstation,1
 2.0,1,Admin,workstation,2
