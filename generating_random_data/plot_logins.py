@@ -1,3 +1,5 @@
+import os
+import webbrowser
 import numpy as np
 import pandas as pd
 import plotly.graph_objs as go
@@ -32,7 +34,7 @@ def color_of(user_id, device_id=None):
         return f'hsl({device_id % 255}, 100%, 50%)'
 
 
-fig = make_subplots(rows=len(roles), cols=1, shared_xaxes=True, subplot_titles=roles)
+fig = make_subplots(rows=len(roles), cols=1, shared_xaxes=True, vertical_spacing=0.02) #, subplot_titles=roles)
 
 for i, role in enumerate(roles):
     role_data = logins[logins['Role'] == role]
@@ -41,17 +43,19 @@ for i, role in enumerate(roles):
         user_data = role_data[role_data['UserID'] == user]
         user_color = color_of(user)
         for device_type in user_data['Device Type'].unique():
-            user_device_type_data = user_data.loc[user_data['Device Type']==device_type]
+            user_device_type_data = user_data.loc[user_data['Device Type'] == device_type]
             device_shape = device_shapes[device_type]
             user_device_login_times = user_device_type_data['Login Time']
             y_coordinates = [j * 10] * len(user_device_login_times)
             # device_markers = user_data['Device Type'].map(device_shapes)
-            device_color = user_device_type_data.apply(lambda row: color_of(row['Device UserID'], row['DeviceID']), axis=1)
+            device_color = user_device_type_data.apply(lambda row: color_of(row['Device UserID'], row['DeviceID']),
+                                                       axis=1)
             fig.add_trace(go.Scatter(
                 x=user_device_login_times,
                 y=y_coordinates,
                 mode='markers',
                 marker=dict(color=user_color, size=2),
+                legendgroup=device_type,
                 showlegend=False
             ), row=i + 1, col=1)
             fig.add_trace(go.Scatter(
@@ -59,6 +63,7 @@ for i, role in enumerate(roles):
                 y=y_coordinates,
                 mode='markers',
                 marker=dict(color=role_color, size=4),
+                legendgroup=device_type,
                 showlegend=False
             ), row=i + 1, col=1)
             fig.add_trace(go.Scatter(
@@ -66,6 +71,7 @@ for i, role in enumerate(roles):
                 y=y_coordinates,
                 mode='markers',
                 marker=device_shape,
+                legendgroup=device_type,
                 showlegend=False
             ), row=i + 1, col=1)
         # for _, row in user_data.iterrows():
@@ -105,28 +111,39 @@ for i, role in enumerate(roles):
 
 # Update layout
 fig.update_layout(
-    height=800,
-    title_text='Logins by Role',
-    xaxis_title='Login Time',
-    yaxis_title='Role',
-    showlegend=False
+    height=1600,
+    # title_text='Logins by Role',
+    # xaxis_title='Login Time',
+    # yaxis_title='Role',
+    showlegend=True
 )
 
 # Update y-axes labels
 for i, role in enumerate(roles):
     fig.update_yaxes(title_text=role, row=i + 1, col=1)
+for device_type in device_shapes.keys():
+    device_shape = device_shapes[device_type]
+    fig.add_trace(go.Scatter(
+        x=[],
+        y=[],
+        mode='markers',
+        marker=device_shape,
+        legendgroup=device_type,
+        showlegend=True
+    ), row=i + 1, col=1)
 
 # Show plot
-fig.show()
+# fig.show()
 
-file_path = os.path.join(path_of_plot, f'{name}.html')
-    with open(file_path, "w", encoding="utf-8") as file:
-        file.write(combined_html)
-    if show:
-        full_path = os.path.abspath(file_path)
-        webbrowser.register('firefox',
-                            None,
-                            webbrowser.BackgroundBrowser("C://Program Files//Mozilla Firefox//firefox.exe"))
-        webbrowser.get('firefox').open(f'file://{full_path}')
-        # display(combined_html, raw=True, clear=True)  # Show the final HTML in the browser
-    if not save: os.remove(combined_html)
+file_path = os.path.join(f'logins.html')
+with open(file_path, "w", encoding="utf-8") as file:
+    file.write(fig.to_html())
+if True: #show:
+    full_path = os.path.abspath(file_path)
+    webbrowser.register('firefox',
+                        None,
+                        webbrowser.BackgroundBrowser("C://Program Files//Mozilla Firefox//firefox.exe"))
+    webbrowser.get('firefox').open(f'file://{full_path}')
+    # display(combined_html, raw=True, clear=True)  # Show the final HTML in the browser
+# if not save:
+#     os.remove(combined_html)
