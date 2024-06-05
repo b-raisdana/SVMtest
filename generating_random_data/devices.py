@@ -8,8 +8,8 @@ daily_timesheet = pd.read_csv("shift_employees.csv", parse_dates=['Day'])
 #     '''
 #     devices_distribution = {
 #         'workstation': 0.93,
-#         'normal_server': 0.055,
-#         'sensitive_server': 0.015,
+#         'normal server': 0.055,
+#         'sensitive server': 0.015,
 #     }
 #     :return:
 #     '''
@@ -21,6 +21,27 @@ daily_timesheet = pd.read_csv("shift_employees.csv", parse_dates=['Day'])
 #
 #
 # devices = generate_devices(config.total_number_of_devices, config.devices_distribution)
+devices = pd.DataFrame()
 
-devices_df = pd.DataFrame(devices, columns=['Device Type'])
-devices_df.to_csv('devices.csv')
+
+def generate_workstations(_daily_timesheet):
+    users_in_groups = \
+        _daily_timesheet.groupby(['UserID', 'GroupID', 'Role']).first().reset_index()[['UserID', 'GroupID', 'Role']]
+    workstations = users_in_groups
+    workstations['Device Type'] = 'workstation'
+    total_number_of_devices = round(len(workstations) / config.devices_distribution['workstation'])
+    number_of_normal_server = round(total_number_of_devices * config.devices_distribution['normal server'])
+    normal_servers = pd.DataFrame([[500, 'normal server']] * number_of_normal_server,
+                                  columns=['GroupID', 'Device Type'])
+    number_of_sensitive_server = round(total_number_of_devices * config.devices_distribution['sensitive server'])
+    sensitive_servers = pd.DataFrame([[500, 'sensitive server']] * number_of_sensitive_server,
+                                     columns=['GroupID', 'Device Type'])
+    _devices = pd.concat([workstations, normal_servers, sensitive_servers])
+    _devices['DeviceID'] = range(len(_devices))
+    return _devices
+
+
+devices_df = generate_workstations(daily_timesheet)
+
+# devices_df = pd.DataFrame(devices, columns=['Device Type'])
+devices_df.to_csv('devices.csv', index=False)

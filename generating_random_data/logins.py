@@ -1,4 +1,5 @@
 import datetime
+from typing import Literal
 
 import numpy as np
 import pandas as pd
@@ -15,11 +16,13 @@ def first_login(_daily_timesheet):
     self_workstation_first_login_ids = np.random.choice(_daily_timesheet.index, number_of_self_workstation_first_logins,
                                                         replace=False)
     scheduled_start_day = _daily_timesheet.loc[self_workstation_first_login_ids, 'Day']
-    scheduled_start_hours = _daily_timesheet.loc[self_workstation_first_login_ids, 'Shift Start H']
-    tolerance_start_mins = gaussian(start=-config.normal_early_start_mins, end=config.normal_late_start_mins,
-                                    size=number_of_self_workstation_first_logins, skew=4)
-    login_time = (scheduled_start_day + scheduled_start_hours * datetime.timedelta(hours=1)
-                  + tolerance_start_mins * datetime.timedelta(minutes=1))
+    # scheduled_start_hours = _daily_timesheet.loc[self_workstation_first_login_ids, 'Shift Start H']
+    scheduled_start_hours = pd.to_timedelta(_daily_timesheet.loc[self_workstation_first_login_ids, 'Shift Start H'],
+                                            unit='hours')
+    tolerance_start_mins = pd.to_timedelta(
+        gaussian(start=-config.normal_early_start_mins, end=config.normal_late_start_mins,
+                 size=number_of_self_workstation_first_logins, skew=4), unit='minutes')
+    login_time = (scheduled_start_day + scheduled_start_hours + tolerance_start_mins)
 
     _logins = _daily_timesheet.loc[self_workstation_first_login_ids].copy()
     _logins['Target Type'] = 'Self Work Station'
@@ -74,8 +77,9 @@ def generate_login_times(candidate_shifts: pd.DataFrame):
     seconds_in_shift = (candidate_shifts['Shift End dt'] - candidate_shifts['Shift Start dt']).dt.seconds
     candidate_shifts['Login Seconds Shifter'] = np.random.normal(loc=0, scale=seconds_in_shift / 4, size=len(
         candidate_shifts))  # 95% in shift time with normal distribution
-    middle_of_shift = candidate_shifts['Shift Start dt'] + (candidate_shifts['Shift End dt'] - candidate_shifts['Shift Start dt']) / 2
-    return middle_of_shift + candidate_shifts['Login Seconds Shifter'] * datetime.timedelta(seconds=1)
+    middle_of_shift = candidate_shifts['Shift Start dt'] + (
+            candidate_shifts['Shift End dt'] - candidate_shifts['Shift Start dt']) / 2
+    return middle_of_shift + pd.to_timedelta(candidate_shifts['Login Seconds Shifter'], unit='seconds')
 
 
 logins = more_login_to_self_workstations(daily_timesheet, logins)
@@ -107,5 +111,77 @@ def logins_to_other_device(_daily_timesheet: pd.DataFrame, _logins: pd.DataFrame
 
 
 logins = logins_to_other_device(daily_timesheet, logins)  # todo: test
+
+devices = pd.read_csv('devices.csv')
+
+
+def general_role(role):
+    for g_role, parameters in config.login_norms.items():
+        specific_roles = parameters['roles']
+        if role in specific_roles:
+            return g_role
+    raise ValueError(role)
+
+
+def self_workstation(sub_logins: pd.DataFrame, _devices):
+    # target is UserID.GroupID
+    merged = sub_logins.merge(_devices, left_on=['UserID', 'GroupID'], right_on=['UserID', 'GroupID'], how='left')
+    assert all(merged['DeviceID'].notna())
+    t = merged['DeviceID'].tolist()
+    return t
+
+
+def allowed_workstations(role: str, _devices):
+    general_rol = general_role(role)
+    allowed_target_roles = config.login_norms[general_rol]['target workgroups']
+    t = _devices[_devices['Role'].isin(allowed_target_roles)]
+    return t['DeviceID']
+
+
+def random_allowed_workstations(sub_logins, _devices):
+    for role in sub_logins['Role'].unique():
+        role_mask = sub_logins['Role'] == role
+        _workstations = allowed_workstations(role, _devices)
+        targets = np.random.choice(_workstations, len(sub_logins.loc[role_mask]), replace=True)
+        sub_logins.loc[role_mask, 'Target'] = targets
+    return sub_logins
+
+
+def random_servers(size, _devices, server_type: Literal['normal server', 'sensitive server']):
+    server_ids = _devices.loc[_devices['Device Type'] == server_type, 'DeviceID']
+    t = np.random.choice(server_ids, size)
+    return t
+
+
+def login_targets(_logins, _devices):
+    _logins['Target'] = pd.NA
+    # _l = _logins['UserID', 'GroupID', 'Role', 'Target Type']
+    # roles = _l['Role'].unique()
+    # general_roles = [general_role(r) for r in roles]
+    targets_types = _logins['Target Type'].unique()
+    for target_type in targets_types:
+        target_type_mask = _logins['Target Type'] == target_type
+        if target_type == 'Self Work Station':
+            _logins.loc[target_type_mask, 'Target'] = self_workstation(_logins.loc[target_type_mask],
+                                                                       _devices)
+
+        elif target_type == 'other workstations':
+            # login target is from allowed_workstations according to privilege or user role.
+            _logins.loc[target_type_mask] = random_allowed_workstations(_logins.loc[target_type_mask],
+                                                                        _devices)
+        elif target_type == 'normal server':
+            # target is one normal server
+            _logins.loc[target_type_mask, 'Target'] = random_servers(len(_logins.loc[target_type_mask]),
+                                                                     _devices, server_type='normal server')
+
+        elif target_type == 'sensitive server':
+            # target is one sensitive server
+            _logins.loc[target_type_mask, 'Target'] = random_servers(len(_logins.loc[target_type_mask]),
+                                                                     _devices, server_type='sensitive server')
+        else:
+            raise ValueError(target_type)
+
+
+login_targets(logins, devices)
 
 logins.to_csv('logins.csv', index=False)

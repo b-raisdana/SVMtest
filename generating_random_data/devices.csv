@@ -1,201 +1,172 @@
-,Device Type
-0,workstation
-1,workstation
-2,workstation
-3,workstation
-4,workstation
-5,workstation
-6,workstation
-7,workstation
-8,workstation
-9,workstation
-10,workstation
-11,workstation
-12,workstation
-13,workstation
-14,workstation
-15,workstation
-16,workstation
-17,workstation
-18,workstation
-19,workstation
-20,workstation
-21,workstation
-22,workstation
-23,workstation
-24,workstation
-25,workstation
-26,workstation
-27,workstation
-28,workstation
-29,workstation
-30,workstation
-31,workstation
-32,workstation
-33,workstation
-34,workstation
-35,workstation
-36,workstation
-37,workstation
-38,workstation
-39,workstation
-40,workstation
-41,workstation
-42,workstation
-43,workstation
-44,workstation
-45,workstation
-46,workstation
-47,workstation
-48,workstation
-49,workstation
-50,workstation
-51,workstation
-52,workstation
-53,workstation
-54,workstation
-55,workstation
-56,workstation
-57,workstation
-58,workstation
-59,workstation
-60,workstation
-61,workstation
-62,workstation
-63,workstation
-64,workstation
-65,workstation
-66,workstation
-67,workstation
-68,workstation
-69,workstation
-70,workstation
-71,workstation
-72,workstation
-73,workstation
-74,workstation
-75,workstation
-76,workstation
-77,workstation
-78,workstation
-79,workstation
-80,workstation
-81,workstation
-82,workstation
-83,workstation
-84,workstation
-85,workstation
-86,workstation
-87,workstation
-88,workstation
-89,workstation
-90,workstation
-91,workstation
-92,workstation
-93,workstation
-94,workstation
-95,workstation
-96,workstation
-97,workstation
-98,workstation
-99,workstation
-100,workstation
-101,workstation
-102,workstation
-103,workstation
-104,workstation
-105,workstation
-106,workstation
-107,workstation
-108,workstation
-109,workstation
-110,workstation
-111,workstation
-112,workstation
-113,workstation
-114,workstation
-115,workstation
-116,workstation
-117,workstation
-118,workstation
-119,workstation
-120,workstation
-121,workstation
-122,workstation
-123,workstation
-124,workstation
-125,workstation
-126,workstation
-127,workstation
-128,workstation
-129,workstation
-130,workstation
-131,workstation
-132,workstation
-133,workstation
-134,workstation
-135,workstation
-136,workstation
-137,workstation
-138,workstation
-139,workstation
-140,workstation
-141,workstation
-142,workstation
-143,workstation
-144,workstation
-145,workstation
-146,workstation
-147,workstation
-148,workstation
-149,workstation
-150,workstation
-151,workstation
-152,workstation
-153,workstation
-154,workstation
-155,workstation
-156,workstation
-157,workstation
-158,workstation
-159,workstation
-160,workstation
-161,workstation
-162,workstation
-163,workstation
-164,workstation
-165,workstation
-166,workstation
-167,workstation
-168,workstation
-169,workstation
-170,workstation
-171,workstation
-172,workstation
-173,workstation
-174,workstation
-175,workstation
-176,workstation
-177,workstation
-178,workstation
-179,workstation
-180,workstation
-181,workstation
-182,workstation
-183,workstation
-184,workstation
-185,workstation
-186,normal_server
-187,normal_server
-188,normal_server
-189,normal_server
-190,normal_server
-191,normal_server
-192,normal_server
-193,normal_server
-194,normal_server
-195,normal_server
-196,normal_server
-197,sensitive_server
-198,sensitive_server
-199,sensitive_server
+UserID,GroupID,Role,Device Type,DeviceID
+0.0,1,Admin,workstation,0
+1.0,1,Admin,workstation,1
+2.0,1,Admin,workstation,2
+3.0,2,Support Day,workstation,3
+4.0,2,Support Day,workstation,4
+5.0,2,Support Day,workstation,5
+6.0,2,Support Day,workstation,6
+7.0,3,Support Shift,workstation,7
+8.0,3,Support Shift,workstation,8
+9.0,3,Support Shift,workstation,9
+10.0,4,Regular Shift,workstation,10
+11.0,4,Regular Shift,workstation,11
+12.0,4,Regular Shift,workstation,12
+13.0,4,Regular Shift,workstation,13
+14.0,4,Regular Shift,workstation,14
+15.0,4,Regular Shift,workstation,15
+16.0,4,Regular Shift,workstation,16
+17.0,4,Regular Shift,workstation,17
+18.0,4,Regular Shift,workstation,18
+19.0,4,Regular Shift,workstation,19
+20.0,4,Regular Shift,workstation,20
+21.0,4,Regular Shift,workstation,21
+22.0,4,Regular Shift,workstation,22
+23.0,4,Regular Shift,workstation,23
+24.0,4,Regular Shift,workstation,24
+25.0,4,Regular Shift,workstation,25
+26.0,4,Regular Shift,workstation,26
+27.0,5,Regular Shift,workstation,27
+28.0,5,Regular Shift,workstation,28
+29.0,3,Support Shift,workstation,29
+29.0,5,Regular Shift,workstation,30
+30.0,3,Support Shift,workstation,31
+30.0,5,Regular Shift,workstation,32
+31.0,5,Regular Shift,workstation,33
+32.0,5,Regular Shift,workstation,34
+33.0,5,Regular Shift,workstation,35
+34.0,5,Regular Shift,workstation,36
+35.0,5,Regular Shift,workstation,37
+36.0,5,Regular Shift,workstation,38
+37.0,5,Regular Shift,workstation,39
+38.0,5,Regular Shift,workstation,40
+39.0,5,Regular Shift,workstation,41
+40.0,5,Regular Shift,workstation,42
+41.0,5,Regular Shift,workstation,43
+42.0,5,Regular Shift,workstation,44
+43.0,5,Regular Shift,workstation,45
+44.0,5,Regular Shift,workstation,46
+45.0,5,Regular Shift,workstation,47
+46.0,5,Regular Shift,workstation,48
+47.0,5,Regular Shift,workstation,49
+48.0,5,Regular Shift,workstation,50
+49.0,5,Regular Shift,workstation,51
+50.0,6,Regular Day,workstation,52
+51.0,5,Regular Shift,workstation,53
+51.0,6,Regular Day,workstation,54
+52.0,6,Regular Day,workstation,55
+53.0,6,Regular Day,workstation,56
+54.0,6,Regular Day,workstation,57
+55.0,6,Regular Day,workstation,58
+56.0,6,Regular Day,workstation,59
+57.0,6,Regular Day,workstation,60
+58.0,6,Regular Day,workstation,61
+59.0,6,Regular Day,workstation,62
+60.0,6,Regular Day,workstation,63
+61.0,6,Regular Day,workstation,64
+62.0,6,Regular Day,workstation,65
+63.0,6,Regular Day,workstation,66
+64.0,6,Regular Day,workstation,67
+65.0,6,Regular Day,workstation,68
+66.0,6,Regular Day,workstation,69
+67.0,6,Regular Day,workstation,70
+68.0,6,Regular Day,workstation,71
+69.0,6,Regular Day,workstation,72
+70.0,6,Regular Day,workstation,73
+71.0,6,Regular Day,workstation,74
+72.0,6,Regular Day,workstation,75
+73.0,6,Regular Day,workstation,76
+74.0,6,Regular Day,workstation,77
+75.0,6,Regular Day,workstation,78
+76.0,6,Regular Day,workstation,79
+77.0,6,Regular Day,workstation,80
+78.0,6,Regular Day,workstation,81
+79.0,6,Regular Day,workstation,82
+80.0,6,Regular Day,workstation,83
+81.0,6,Regular Day,workstation,84
+82.0,6,Regular Day,workstation,85
+83.0,6,Regular Day,workstation,86
+84.0,6,Regular Day,workstation,87
+85.0,6,Regular Day,workstation,88
+86.0,6,Regular Day,workstation,89
+87.0,6,Regular Day,workstation,90
+88.0,6,Regular Day,workstation,91
+89.0,6,Regular Day,workstation,92
+90.0,6,Regular Day,workstation,93
+91.0,6,Regular Day,workstation,94
+92.0,6,Regular Day,workstation,95
+93.0,6,Regular Day,workstation,96
+94.0,6,Regular Day,workstation,97
+95.0,6,Regular Day,workstation,98
+96.0,6,Regular Day,workstation,99
+97.0,6,Regular Day,workstation,100
+98.0,6,Regular Day,workstation,101
+99.0,6,Regular Day,workstation,102
+100.0,7,Regular Day,workstation,103
+101.0,7,Regular Day,workstation,104
+102.0,5,Regular Shift,workstation,105
+102.0,7,Regular Day,workstation,106
+103.0,7,Regular Day,workstation,107
+104.0,7,Regular Day,workstation,108
+105.0,4,Regular Shift,workstation,109
+105.0,7,Regular Day,workstation,110
+106.0,4,Regular Shift,workstation,111
+106.0,7,Regular Day,workstation,112
+107.0,7,Regular Day,workstation,113
+108.0,7,Regular Day,workstation,114
+109.0,7,Regular Day,workstation,115
+110.0,7,Regular Day,workstation,116
+111.0,7,Regular Day,workstation,117
+112.0,7,Regular Day,workstation,118
+113.0,7,Regular Day,workstation,119
+114.0,7,Regular Day,workstation,120
+115.0,7,Regular Day,workstation,121
+116.0,7,Regular Day,workstation,122
+117.0,7,Regular Day,workstation,123
+118.0,7,Regular Day,workstation,124
+119.0,4,Regular Shift,workstation,125
+119.0,7,Regular Day,workstation,126
+120.0,7,Regular Day,workstation,127
+121.0,7,Regular Day,workstation,128
+122.0,7,Regular Day,workstation,129
+123.0,7,Regular Day,workstation,130
+124.0,7,Regular Day,workstation,131
+125.0,7,Regular Day,workstation,132
+126.0,7,Regular Day,workstation,133
+127.0,7,Regular Day,workstation,134
+128.0,7,Regular Day,workstation,135
+129.0,7,Regular Day,workstation,136
+130.0,7,Regular Day,workstation,137
+131.0,7,Regular Day,workstation,138
+132.0,7,Regular Day,workstation,139
+133.0,7,Regular Day,workstation,140
+134.0,7,Regular Day,workstation,141
+135.0,7,Regular Day,workstation,142
+136.0,7,Regular Day,workstation,143
+137.0,7,Regular Day,workstation,144
+138.0,5,Regular Shift,workstation,145
+138.0,7,Regular Day,workstation,146
+139.0,7,Regular Day,workstation,147
+140.0,8,Support Day,workstation,148
+141.0,9,Admin,workstation,149
+142.0,9,Admin,workstation,150
+143.0,6,Regular Day,workstation,151
+143.0,9,Admin,workstation,152
+144.0,9,Admin,workstation,153
+145.0,10,Support Shift,workstation,154
+146.0,10,Support Shift,workstation,155
+147.0,10,Support Shift,workstation,156
+148.0,10,Support Shift,workstation,157
+149.0,10,Support Shift,workstation,158
+,500,,normal server,159
+,500,,normal server,160
+,500,,normal server,161
+,500,,normal server,162
+,500,,normal server,163
+,500,,normal server,164
+,500,,normal server,165
+,500,,normal server,166
+,500,,normal server,167
+,500,,sensitive server,168
+,500,,sensitive server,169
+,500,,sensitive server,170

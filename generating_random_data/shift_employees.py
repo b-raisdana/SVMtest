@@ -190,9 +190,9 @@ daily_timesheet = shift_parameters(daily_timesheet)
 
 def shift_date_times(_daily_timesheet):
     _daily_timesheet['Shift Start dt'] = (_daily_timesheet['Day']
-                                          + _daily_timesheet['Shift Start H'] * datetime.timedelta(hours=1))
+                                          + pd.to_timedelta(_daily_timesheet['Shift Start H'], unit='hours'))
     _daily_timesheet['Shift End dt'] = (_daily_timesheet['Day']
-                                        + _daily_timesheet['Shift End H'] * datetime.timedelta(hours=1))
+                                        + pd.to_timedelta(_daily_timesheet['Shift End H'], unit='hours'))
     next_day_ends_mask = _daily_timesheet['Shift End dt'] < _daily_timesheet['Shift Start dt']
     _daily_timesheet.loc[next_day_ends_mask, 'Shift End dt'] = \
         _daily_timesheet.loc[next_day_ends_mask, 'Shift End dt'] + datetime.timedelta(hours=24)
@@ -202,7 +202,10 @@ def shift_date_times(_daily_timesheet):
     # assert _daily_timesheet['Shift End dt'].dtype == datetime
     assert all(_daily_timesheet['Shift End dt'] > _daily_timesheet['Shift Start dt'])
 
+
 shift_date_times(daily_timesheet)
+
+
 # def distribute_role_over_shifts(role, work_group_df):
 #     regular_shift_idx = work_group_df[work_group_df['Role'] == role].index.values.tolist()
 #     shifts_headcount = np.random.multinomial(
