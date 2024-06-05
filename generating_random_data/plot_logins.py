@@ -118,3 +118,15 @@ for i, role in enumerate(roles):
 
 # Show plot
 fig.show()
+
+file_path = os.path.join(path_of_plot, f'{name}.html')
+    with open(file_path, "w", encoding="utf-8") as file:
+        file.write(combined_html)
+    if show:
+        full_path = os.path.abspath(file_path)
+        webbrowser.register('firefox',
+                            None,
+                            webbrowser.BackgroundBrowser("C://Program Files//Mozilla Firefox//firefox.exe"))
+        webbrowser.get('firefox').open(f'file://{full_path}')
+        # display(combined_html, raw=True, clear=True)  # Show the final HTML in the browser
+    if not save: os.remove(combined_html)
