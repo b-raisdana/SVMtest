@@ -176,10 +176,10 @@ def shift_parameters(_daily_timesheet):
         _daily_timesheet.loc[role_timesheet_mask, 'Shift'] = (
             daily_timesheet_back.loc[role_timesheet_mask, 'ShiftID'].map(
                 {index: value for index, value in enumerate(role_shift_variety_names)}))
-        _daily_timesheet.loc[role_timesheet_mask, 'Shift Start'] = (
+        _daily_timesheet.loc[role_timesheet_mask, 'Shift Start H'] = (
             daily_timesheet_back.loc[role_timesheet_mask, 'ShiftID'].map(
                 {index: value for index, value in enumerate(role_shift_variety_starts)}))
-        _daily_timesheet.loc[role_timesheet_mask, 'Shift End'] = (
+        _daily_timesheet.loc[role_timesheet_mask, 'Shift End H'] = (
             daily_timesheet_back.loc[role_timesheet_mask, 'ShiftID'].map(
                 {index: value for index, value in enumerate(role_shift_variety_ends)}))
     return _daily_timesheet
@@ -187,7 +187,22 @@ def shift_parameters(_daily_timesheet):
 
 daily_timesheet = shift_parameters(daily_timesheet)
 
-daily_timesheet.to_csv("shift_employees.csv", index=False)
+
+def shift_date_times(_daily_timesheet):
+    _daily_timesheet['Shift Start dt'] = (_daily_timesheet['Day']
+                                          + _daily_timesheet['Shift Start H'] * datetime.timedelta(hours=1))
+    _daily_timesheet['Shift End dt'] = (_daily_timesheet['Day']
+                                        + _daily_timesheet['Shift End H'] * datetime.timedelta(hours=1))
+    next_day_ends_mask = _daily_timesheet['Shift End dt'] < _daily_timesheet['Shift Start dt']
+    _daily_timesheet.loc[next_day_ends_mask, 'Shift End dt'] = \
+        _daily_timesheet.loc[next_day_ends_mask, 'Shift End dt'] + datetime.timedelta(hours=24)
+    assert _daily_timesheet['Shift Start dt'].notna().all()
+    assert _daily_timesheet['Shift End dt'].notna().all()
+    # assert _daily_timesheet['Shift Start dt'].dtype == datetime
+    # assert _daily_timesheet['Shift End dt'].dtype == datetime
+    assert all(_daily_timesheet['Shift End dt'] > _daily_timesheet['Shift Start dt'])
+
+shift_date_times(daily_timesheet)
 # def distribute_role_over_shifts(role, work_group_df):
 #     regular_shift_idx = work_group_df[work_group_df['Role'] == role].index.values.tolist()
 #     shifts_headcount = np.random.multinomial(
@@ -198,3 +213,22 @@ daily_timesheet.to_csv("shift_employees.csv", index=False)
 #         work_group_df.iloc[regular_shift_idx[j:shifts_headcount[i]]]['Shift'] = \
 #             config.role_shift_varieties[role].keys()[i]
 #         j = shifts_headcount[i]
+
+def drop_absents(_daily_timesheet: pd.DataFrame):
+    # remove absents according to 'absence_rate' weighted distributed between roles and shifts.
+    role_absent_counts = dict(zip(
+        config.roles,
+        np.random.multinomial(round(config.absence_rate * config.total_employees),
+                              [config.role_distribution[role] for role in config.roles])))
+    for day in _daily_timesheet['Day'].unique():
+        day_mask = _daily_timesheet['Day'] == day
+        for role in config.roles:
+            day_roles_mask = day_mask & (_daily_timesheet['Role'] == role)
+            day_roles_idxs = _daily_timesheet.loc[day_roles_mask].index
+            role_absents = np.random.choice(day_roles_idxs, role_absent_counts[role])
+            _daily_timesheet.drop(role_absents, axis='index', inplace=True)
+
+
+drop_absents(daily_timesheet)
+
+daily_timesheet.to_csv("shift_employees.csv", index=False)

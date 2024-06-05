@@ -29,7 +29,7 @@ daily_timesheet = pd.read_csv("shift_employees.csv", parse_dates=['Day'])
 #     normal_starters_at_shift_start = np.random.choice(_normal_starters, number_of_normal_starters_at_shift_start,
 #                                                       replace=False)
 #     normal_starters_at_shift_start_mask = _daily_timesheet['UserID'].isin(normal_starters_at_shift_start)
-#     scheduled_starts = _daily_timesheet.loc[normal_starters_at_shift_start_mask, 'Shift Start']
+#     scheduled_starts = _daily_timesheet.loc[normal_starters_at_shift_start_mask, 'Shift Start H']
 #     tolerance_start_mins = gaussian(start=config.normal_early_start_mins, end=config.normal_late_start_mins,
 #                                     size=number_of_normal_starters_at_shift_start, skew=10)
 #     actual_starts = scheduled_starts + tolerance_start_mins * datetime.timedelta(minutes=1)
@@ -53,22 +53,7 @@ daily_timesheet = pd.read_csv("shift_employees.csv", parse_dates=['Day'])
 # '''
 # choose start time of other days of other employees according to 'role_shift_varieties' by skewed, kurtosis distribution.
 # '''
-def drop_absents(_daily_timesheet: pd.DataFrame):
-    # remove absents according to 'absence_rate' weighted distributed between roles and shifts.
-    role_absent_counts = dict(zip(
-        config.roles.keys(),
-        np.random.multinomial(round(config.absence_rate * config.total_employees),
-                              [config.role_distribution[role] for role in config.roles])))
-    for day in _daily_timesheet['Day'].unique():
-        d_work_group_mask = _daily_timesheet['Day'] == day
-        for role in config.roles:
-            day_roles_mask = d_work_group_mask & (_daily_timesheet['Role'] == role)
-            day_roles_idxs = _daily_timesheet.loc[day_roles_mask].index
-            role_absents = np.random.choice(day_roles_idxs, role_absent_counts[role])
-            _daily_timesheet.drop(role_absents, axis='index')
 
-
-drop_absents(daily_timesheet)
 
 
 
