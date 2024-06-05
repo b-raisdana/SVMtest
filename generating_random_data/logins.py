@@ -10,8 +10,7 @@ daily_timesheet = pd.read_csv("shift_employees.csv", parse_dates=['Day'])
 
 
 def first_login(_daily_timesheet):
-    # todo: test iloc[[0,0]]
-    number_of_self_workstation_first_logins = round(
+    number_of_self_workstation_first_logins = round(  # todo: test iloc[[0,0]]
         config.self_workstation_first_login_rate * len(_daily_timesheet))
     self_workstation_first_login_ids = np.random.choice(_daily_timesheet.index, number_of_self_workstation_first_logins,
                                                         replace=False)
@@ -29,13 +28,12 @@ def first_login(_daily_timesheet):
     return _logins
 
 
-# todo: test iloc[[0,0]]
-logins = first_login(daily_timesheet)
+logins = first_login(daily_timesheet)  # todo: test iloc[[0,0]]
 
 
 def drop_near_re_logins(_logins):
-    # todo: test
-    sorted_daily_timesheet = _logins.sort_values(by=['Day', 'UserID', 'Login Time'], ascending=True).copy()
+    sorted_daily_timesheet = _logins.sort_values(by=['Day', 'UserID', 'Login Time'],
+                                                 ascending=True).copy()  # todo: test
     sorted_daily_timesheet['Previous Login UserID'] = sorted_daily_timesheet['UserID'].shift(-1)
     sorted_daily_timesheet['Previous Login Time'] = sorted_daily_timesheet['Login Time'].shift(-1)
     near_logins_idxs = sorted_daily_timesheet.iloc[1:][
