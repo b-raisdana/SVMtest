@@ -46,7 +46,7 @@ scaled_features = scaler.fit_transform(df)
 # df['Cluster'] = clusters
 
 
-# List of clustering algorithms
+# List of modeling algorithms
 clustering_algorithms = [
     ("DBSCAN", DBSCAN(eps=0.5, min_samples=2)),
     ("Agglomerative", AgglomerativeClustering(n_clusters=2)),
