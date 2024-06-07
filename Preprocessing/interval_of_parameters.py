@@ -27,3 +27,14 @@ def interval_of_parameters(df, is_not_a_parameter: List = None):
             df.drop(columns=[f'previous {parameter}' for parameter in parameter_combination] + ['previous time'],
                     inplace=True)
     return df.sort_values(by='Login Time')
+
+data = pd.read_csv("../Data/logins.obfuscated.csv", parse_dates=['Login Time'])
+
+
+def pre_record_processor(df: pd.DataFrame) -> pd.DataFrame:
+    df = interval_of_parameters(df)
+    return df
+
+
+data = pre_record_processor(data)  # todo: test
+data.to_csv("../Data/logins.pre_processed.interval_of_parameters.csv", index=False)
