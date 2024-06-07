@@ -85,26 +85,26 @@ def users_in_groups(_group_sizes, _group_roles):
 
 work_group_data = users_in_groups(group_sizes, group_roles)
 
-work_group_df = pd.DataFrame(work_group_data, columns=['UserID', 'GroupID', 'Role'])
+workgroup = pd.DataFrame(work_group_data, columns=['UserID', 'GroupID', 'Role'])
 
 
-def verify_work_group(_work_group_df):
-    summary = _work_group_df.groupby(['Role']).size().reset_index().rename(columns={0: 'Population'})
+def verify_work_group(_workgroup):
+    summary = _workgroup.groupby(['Role']).size().reset_index().rename(columns={0: 'Population'})
     assert is_sized_work_group(summary)
 
 
-verify_work_group(work_group_df)
+verify_work_group(workgroup)
 
-work_group_df.to_csv("work_group_df.csv", index=False)
+workgroup.to_csv("../Data/workgroups.csv", index=False)
 
 # # Ensure the total count is still valid
-# def check_role_users_distribution(_work_group_df, _role_distribution):
-#     _group_sizes = _work_group_df.groupby('GroupID').agg('count')
-#     _group_sizes = _work_group_df.groupby(['GroupID', 'Role']).size().reset_index()
+# def check_role_users_distribution(_workgroup, _role_distribution):
+#     _group_sizes = _workgroup.groupby('GroupID').agg('count')
+#     _group_sizes = _workgroup.groupby(['GroupID', 'Role']).size().reset_index()
 #     assert all([
-#         abs((len(_work_group_df[_work_group_df['Role'] == role]) / len(
-#             _work_group_df)) - distribution) <= config.role_distribution_tolerance
+#         abs((len(_workgroup[_workgroup['Role'] == role]) / len(
+#             _workgroup)) - distribution) <= config.role_distribution_tolerance
 #         for role, distribution in _role_distribution.items()])
 #
 #
-# check_role_users_distribution(work_group_df, config.role_distribution)
+# check_role_users_distribution(workgroup, config.role_distribution)

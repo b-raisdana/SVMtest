@@ -7,7 +7,7 @@ import pandas as pd
 from generating_random_data import config
 from generating_random_data.distribution import gaussian
 
-daily_timesheet = pd.read_csv("shift_employees.csv", parse_dates=['Day', 'Shift Start dt', 'Shift End dt'])
+daily_timesheet = pd.read_csv("../Data/shift_employees.csv", parse_dates=['Day', 'Shift Start dt', 'Shift End dt'])
 
 
 def first_login(_daily_timesheet):
@@ -195,4 +195,4 @@ def login_targets(_logins, _devices):
 
 login_targets(logins, devices)
 
-logins.to_csv('logins.csv', index=False)
+logins.to_csv('../Data/logins.csv', index=False)

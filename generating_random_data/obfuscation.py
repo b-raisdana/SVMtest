@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import config
 
-logins = pd.read_csv("logins.csv",
+logins = pd.read_csv("../Data/logins.csv",
                      parse_dates=['Day', 'Shift Start dt', 'Shift End dt', 'Login Time',
                                   'Previous Login Time', ])
 
@@ -39,5 +39,5 @@ obfuscator('DeviceCombineID', 'device', logins)
 
 # logins[['user', 'Login Time', 'device', ]].to_csv('login.obfuscated.csv', index=False)
 # logins[['user', 'Login Time', 'device', ]].to_csv('full-login.csv', index=False)
-logins.to_csv('login.obfuscated.full.csv', index=False)
-logins[['user', 'group', 'device', 'ip',  'Login Time']].to_csv('login.obfuscated.csv', index=False)
+logins.to_csv('../Data/login.obfuscated.full.csv', index=False)
+logins[['user', 'group', 'device', 'ip',  'Login Time']].to_csv('../Data/login.obfuscated.csv', index=False)

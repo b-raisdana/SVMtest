@@ -2,7 +2,7 @@ import pandas as pd
 
 from generating_random_data import config
 
-daily_timesheet = pd.read_csv("shift_employees.csv", parse_dates=['Day'])
+daily_timesheet = pd.read_csv("../Data/shift_employees.csv", parse_dates=['Day'])
 
 # def generate_devices(total_number_of_devices, devices_distribution):
 #     '''
@@ -48,4 +48,4 @@ devices_df.rename(columns={
     'Role': 'Device Role',
 }, inplace=True)
 # devices_df = pd.DataFrame(devices, columns=['Device Type'])
-devices_df.to_csv('devices.csv', index=False)
+devices_df.to_csv('../Data/devices.csv', index=False)

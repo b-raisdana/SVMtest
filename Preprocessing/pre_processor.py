@@ -3,7 +3,7 @@ import pandas as pd
 from Preprocessing.parameter_timeframe_count import inter_activity_time_by_parameter
 from Preprocessing.pramater_frequency import frequency_by_parameter
 
-data = pd.read_csv("../logins.obfuscated.csv", pare_date=['Login Time'])
+data = pd.read_csv("../Data/logins.obfuscated.csv", pare_date=['Login Time'])
 
 
 def pre_processor(df: pd.DataFrame) -> pd.DataFrame:
@@ -14,4 +14,4 @@ def pre_processor(df: pd.DataFrame) -> pd.DataFrame:
 
 frequency_data = pre_processor(data)
 
-frequency_data.to_csv('../logins.obfuscated.pre_processed.csv', index=False)
+frequency_data.to_csv('../Data/logins.obfuscated.pre_processed.csv', index=False)

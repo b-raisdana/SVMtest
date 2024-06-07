@@ -2,7 +2,7 @@ import pandas as pd
 
 from Encoding.sin_cos_encoder import sin_cos_encoder
 
-data = pd.read_csv('../logins.obfuscated.pre_processed.csv', parse_dates=['Login Time'])
+data = pd.read_csv('../Data/logins.obfuscated.pre_processed.csv', parse_dates=['Login Time'])
 
 
 def encode(df: pd.DataFrame) -> pd.DataFrame:
@@ -12,4 +12,4 @@ def encode(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-data.to_csv('../logins.obfuscated.encoded.csv', index=False)
+data.to_csv('../Data/logins.obfuscated.encoded.csv', index=False)

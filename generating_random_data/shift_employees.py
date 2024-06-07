@@ -7,20 +7,20 @@ import pandas as pd
 import config
 from work_groups import is_sized_work_group
 
-work_group_df = pd.read_csv("work_group_df.csv")
+workgroup = pd.read_csv("../Data/workgroups.csv")
 
 
 def diff(df1, df2):
     return (df1 != df2)[(df1 != df2).any(axis=1)]
 
 
-def generate_daily_timesheet(_work_group_df):
+def generate_daily_timesheet(_workgroup):
     '''
     assign per-day shifts and roles to employees according to 'role_shift_varieties'.
     first assume roles and shifts does not change.
     '''
     _daily_timesheet = (
-        _work_group_df.merge(
+        _workgroup.merge(
             pd.DataFrame(
                 {'Day': pd.date_range(config.start_day,
                                       config.start_day + datetime.timedelta(days=config.duration_days),
@@ -29,7 +29,7 @@ def generate_daily_timesheet(_work_group_df):
     return _daily_timesheet
 
 
-daily_timesheet = generate_daily_timesheet(work_group_df)
+daily_timesheet = generate_daily_timesheet(workgroup)
 
 
 def verify_daily_timesheet(d_t):
@@ -48,14 +48,14 @@ def role_change(_daily_timesheet, _work_group):
     '''
     _daily_timesheet_back = _daily_timesheet.copy()
     role_change_candidates = (
-        np.random.choice(work_group_df['UserID'],
-                         int(config.employee_weekly_role_change_rate * (config.duration_days / 7) * len(work_group_df)),
+        np.random.choice(workgroup['UserID'],
+                         int(config.employee_weekly_role_change_rate * (config.duration_days / 7) * len(workgroup)),
                          replace=False))
     role_change_dates = np.random.choice(_daily_timesheet['Day'].unique(), len(role_change_candidates), replace=True)
     for i, user_id in enumerate(role_change_candidates):
         old_user_role = _work_group.loc[_work_group['UserID'] == user_id, 'Role'].values[0]
         new_user_role = config.roles[(config.roles.index(old_user_role) + 1) % len(config.roles)]
-        groups_of_new_role = work_group_df[work_group_df['Role'] == new_user_role]['GroupID'].unique().tolist()
+        groups_of_new_role = workgroup[workgroup['Role'] == new_user_role]['GroupID'].unique().tolist()
         new_user_group = np.random.choice(groups_of_new_role)
         _daily_timesheet.loc[
             (_daily_timesheet['UserID'] == user_id) &
@@ -66,7 +66,7 @@ def role_change(_daily_timesheet, _work_group):
 
 
 daily_timesheet_back = daily_timesheet.copy()
-role_change(daily_timesheet, work_group_df)
+role_change(daily_timesheet, workgroup)
 changes = diff(daily_timesheet_back, daily_timesheet)
 verify_daily_timesheet(daily_timesheet)
 
@@ -206,14 +206,14 @@ def shift_date_times(_daily_timesheet):
 shift_date_times(daily_timesheet)
 
 
-# def distribute_role_over_shifts(role, work_group_df):
-#     regular_shift_idx = work_group_df[work_group_df['Role'] == role].index.values.tolist()
+# def distribute_role_over_shifts(role, workgroup):
+#     regular_shift_idx = workgroup[workgroup['Role'] == role].index.values.tolist()
 #     shifts_headcount = np.random.multinomial(
 #         range(len(regular_shift_idx)),
 #         [(1 / len(config.role_shift_varieties[role]))] * len(config.role_shift_varieties[role]))
 #     j = 0
 #     for i in range(len(config.role_shift_varieties[role])):
-#         work_group_df.iloc[regular_shift_idx[j:shifts_headcount[i]]]['Shift'] = \
+#         workgroup.iloc[regular_shift_idx[j:shifts_headcount[i]]]['Shift'] = \
 #             config.role_shift_varieties[role].keys()[i]
 #         j = shifts_headcount[i]
 
@@ -234,4 +234,4 @@ def drop_absents(_daily_timesheet: pd.DataFrame):
 
 drop_absents(daily_timesheet)
 
-daily_timesheet.to_csv("shift_employees.csv", index=False)
+daily_timesheet.to_csv("../Data/shift_employees.csv", index=False)
