@@ -6,7 +6,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import silhouette_score
 
 # Sample data
-df = pd.read_csv('obfuscated-login.csv', parse_dates=['Login Time'])
+df = pd.read_csv('login.obfuscated.csv', parse_dates=['Login Time'])
 
 # Convert 'Login Time' to timestamp in seconds
 df['Login Time'] = (df['Login Time'] - pd.Timestamp("1970-01-01")) // pd.Timedelta('1s')
