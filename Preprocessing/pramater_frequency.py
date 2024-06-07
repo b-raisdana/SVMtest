@@ -15,12 +15,13 @@ def frequency_by_parameter(df: pd.DataFrame, timeframes, non_parameter_columns=N
 
     frequency_df = pd.DataFrame(index=pd.MultiIndex.from_product(
         [[], []], names=['field_name', 'timeframe']))
+    df.set_index('Login Time', inplace=True)
     for r in range(1, len(parameters) + 1):
         parameter_combinations = combinations(parameters, r)
         for combination in parameter_combinations:
             for timeframe in timeframes:
-                df.set_index('Login Time', inplace=True)
                 frequency_df.loc[f"-".join(combination), timeframe] = \
-                    df.groupby(combination).resample(timeframe).count()
+                    df.groupby(list(combination)).resample(timeframe).count()
+    df.reset_index()
 
     return frequency_df

@@ -37,7 +37,7 @@ obfuscator('DeviceCombineID', 'device', logins)
 # unique_devices_map = {key: value for key, value in zip(unique_devices, unique_devices_mapped_value)}
 # logins['device'] = logins['DeviceCombineID'].map(unique_devices_map).astype(int)
 
-# logins[['user', 'Login Time', 'device', ]].to_csv('login.obfuscated.csv', index=False)
-# logins[['user', 'Login Time', 'device', ]].to_csv('full-login.csv', index=False)
-logins.to_csv('../Data/login.obfuscated.full.csv', index=False)
-logins[['user', 'group', 'device', 'ip',  'Login Time']].to_csv('../Data/login.obfuscated.csv', index=False)
+# logins[['user', 'Login Time', 'device', ]].to_csv('logins.obfuscated.csv', index=False)
+# logins[['user', 'Login Time', 'device', ]].to_csv('full-logins.csv', index=False)
+logins.to_csv('../Data/logins.obfuscated.full.csv', index=False)
+logins[['user', 'group', 'device', 'ip',  'Login Time']].to_csv('../Data/logins.obfuscated.csv', index=False)
