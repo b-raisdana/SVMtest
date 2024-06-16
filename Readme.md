@@ -83,8 +83,8 @@
  
 # Required Documentations for 
 
-## Installation and Getting Started Guide. ...
-## Contributor Guidelines. ...
+## Installation and Getting Started Guide
+## Contributor Guidelines
 ## Code of Conduct
 ## API Documentation
 ## Release Notes
