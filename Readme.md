@@ -1,4 +1,6 @@
 ## مرحله اول – تعریف Story اعلان نیامندی توسط معمار سیستم
+الزامات این مرحله توسط معمار سیستم (سیستم آرکیتکت) طراحی می شود.
+خروجی این مرحله یک فایل doc یا هر فرمتی که در confluence راحت نگهداری می شود.
 # Who:
 معمار سیستم
 # What:
@@ -22,6 +24,8 @@
 
 تا بتوانیم انواع اسکجول متنوع از هر نوعی را در قابلیت های مختلف برنامه ایجاد کرد.
 # مرحله دوم – طراحی (Story to Task)
+این مرحله توسط طراح (دولاپر) طراحی می شود.
+خروجی این مرحله یک فایل doc یا هر فرمتی که در confluence راحت نگهداری می شود.
 ## Functionality
 ### عملکردهای مورد نیاز (activity):
 1. ارسال اطلاعات اسکجولد تسک از ریکوئستر به اسکجولر
@@ -67,6 +71,9 @@
 
 # معماری پیاده سازی
 ![SampleDrawing.drawio.3.drawio.png](SampleDrawing.drawio.3.drawio.png)
+این فایل گرافیکی از نوع PNGاست اما در draw.io به شکل جالبی قابل مودیفای کردن است.
+
+این فایل با Google Docs و REAME.md و GitHub و Confluence و ... به خوبی اینگریت می شود.
 
 # Tasks
 + br_sdk.schedule.task_request_publisher(same as /rabitmq/Scheduler/task_consumer)
@@ -80,8 +87,12 @@
 + /rabitmq/Scheduler/scheduled_task_result_publisher(uri: str, parameters: str(JSON({name: str -> value: Any})), requester_id: uuid, scheduler_signature: str(MD5))
 + Scheduler/restore_tasks()
  
-# Required Documentations for 
+# Required Documentations 
+این عناوینیست که در مستند همراه ریلیز باید به صورت Markdown همراه کد داخل فایل READMNE.md در روت پروژه نگهداری بشود.
 
+تأیید کننده ریلیز موظف است به روز بودن مستند را هم همراه با کد تأیید نماید.
+
+در هر ریلیز نگارش همان ریلیز چسبیده به کد دیده می شود.
 ## Installation and Getting Started Guide
 ## Contributor Guidelines
 ## Code of Conduct
