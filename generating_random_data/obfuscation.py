@@ -1,16 +1,16 @@
 import numpy as np
 import pandas as pd
-import config
 
-logins = pd.read_csv("../Data/logins.csv",
-                     parse_dates=['Day', 'Shift Start dt', 'Shift End dt', 'Login Time',
-                                  'Previous Login Time', ])
+logins = pd.read_csv(
+    "C:\\Users\\behrooz.r\\Desktop\\Behrooz-BehinRahkar\\UEBA\\Irancell"
+    "\\winLogonType equal '2,7,10' and eventType like '4624' and destIpAddr isnotnull.'20240501000000' AND '20240810235999'"
+    "\\original.csv",)
 
-logins['UserGroupID'] = logins['UserID'].astype(str) + '-' + logins['GroupID'].astype(str)
-logins['DeviceCombineID'] = (logins['Device UserID'].astype(str) + '-' +
-                             logins['Device GroupID'].astype(str) + '-' +
-                             logins['DeviceID'].astype(str))
-
+# logins['UserGroupID'] = logins['UserID'].astype(str) + '-' + logins['GroupID'].astype(str)
+# logins['DeviceCombineID'] = (logins['Device UserID'].astype(str) + '-' +
+#                              logins['Device GroupID'].astype(str) + '-' +
+#                              logins['DeviceID'].astype(str))
+#
 
 # logins = \
 #     logins[['UserGroupID', 'Login Time', 'DeviceCombineID']]
@@ -22,10 +22,10 @@ def obfuscator(original_field, obfuscated_field, df):
     df.loc[:, obfuscated_field] = df[original_field].map(maper)
 
 
-obfuscator('GroupID', 'group', logins)
-obfuscator('UserID', 'user', logins)
-obfuscator('UserGroupID', 'ip', logins)
-obfuscator('DeviceCombineID', 'device', logins)
+obfuscator('user_name', 'o_user_name', logins)
+obfuscator('target_user', 'o_target_user', logins)
+# obfuscator('UserGroupID', 'ip', logins)
+# obfuscator('DeviceCombineID', 'device', logins)
 
 # unique_users = logins['UserGroupID'].unique()
 # unique_users_mapped_value = np.random.choice(range(len(unique_users)), len(unique_users), replace=False)
@@ -39,5 +39,8 @@ obfuscator('DeviceCombineID', 'device', logins)
 
 # logins[['user', 'Login Time', 'device', ]].to_csv('logins.obfuscated.csv', index=False)
 # logins[['user', 'Login Time', 'device', ]].to_csv('full-logins.csv', index=False)
-logins.to_csv('../Data/logins.obfuscated.full.csv', index=False)
-logins[['user', 'group', 'device', 'ip',  'Login Time']].to_csv('../Data/logins.obfuscated.csv', index=False)
+logins.to_csv("C:\\Users\\behrooz.r\\Desktop\\Behrooz-BehinRahkar\\UEBA\\Irancell"
+    "\\winLogonType equal '2,7,10' and eventType like '4624' and destIpAddr isnotnull.'20240501000000' AND '20240810235999'"
+    "\\obfuscated.csv", index=False)
+# logins[['user', 'group', 'device', 'ip', 'Login Time']].to_csv('../Data/logins.obfuscated.csv', index=False)
+logins.to_csv('../Data/logins.obfuscated.csv', index=False)
